@@ -6,320 +6,233 @@
   <title>Moon Byul Schedule</title>
 
   <style>
-    :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --line:#e6e8f0;
-      --text:#111827;
-      --muted:#6b7280;
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --line: #e6e8f0;
+      --text: #111827;
+      --muted: #6b7280;
 
-      /* 유형별 색 (원하면 바꿔도 됨) */
-      --youtube:#ef4444;
-      --sns:#0ea5e9;
-      --concert:#a855f7;
-      --event:#f59e0b;
-      --live:#22c55e;
-      --album:#6366f1;
+      --youtube: #ef4444;
+      --sns: #0ea5e9;
+      --concert: #a855f7;
+      --event: #f59e0b;
+      --live: #22c55e;
+      --album: #6366f1;
 
-      --shadow: 0 6px 20px rgba(17,24,39,0.06);
+      --shadow: 0 6px 20px rgba(17, 24, 39, 0.06);
     }
 
-    *{ box-sizing:border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    body{
-      margin:0;
+    body {
+      margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto,
                    Apple SD Gothic Neo, Noto Sans KR, sans-serif;
-      background:var(--bg);
-      color:var(--text);
+      background: var(--bg);
+      color: var(--text);
     }
 
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-      padding:16px;
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px;
     }
 
-    header{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:12px;
-      margin:10px 0 14px;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    h1{
-      margin:0;
-      font-size:22px;
-      letter-spacing:0.2px;
+    h1 {
+      margin: 0;
+      font-size: 22px;
     }
 
-    .sub{
-      margin-top:4px;
-      font-size:13px;
-      color:var(--muted);
+    .sub {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
     }
 
-    .bar{
-      display:flex;
-      align-items:center;
-      gap:10px;
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    button{
-      background:var(--card);
-      color:var(--text);
-      border:1px solid var(--line);
-      padding:10px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      touch-action:manipulation;
+    button {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
     }
 
-    button:active{ transform:scale(0.98); }
-
-    .month{
-      min-width:150px;
-      text-align:center;
-      font-weight:700;
+    .month {
+      min-width: 150px;
+      text-align: center;
+      font-weight: 700;
     }
 
-    .grid{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      overflow:hidden;
+    .grid {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
       box-shadow: var(--shadow);
     }
 
-    /* ✅ 칸 너비가 최대한 일정하게 보이도록: 퍼센트 고정 */
-    .dow, .cal{
-      display:grid;
+    .dow,
+    .cal {
+      display: grid;
       grid-template-columns: repeat(7, 14.285714%);
-      width:100%;
     }
 
-    .dow{
-      background:#fafafa;
-      border-bottom:1px solid var(--line);
+    .dow {
+      background: #fafafa;
+      border-bottom: 1px solid var(--line);
     }
 
-    .dow div{
-      padding:10px 12px;
-      font-size:12px;
-      color:var(--muted);
+    .dow div {
+      padding: 10px;
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .cell{
-      min-height:112px;
-      padding:10px 10px 8px;
-      border-right:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-      position:relative;
-      user-select:none;
+    .cell {
+      min-height: 90px;
+      padding: 8px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
     }
 
-    .cell:nth-child(7n){ border-right:none; }
-
-    .other-month{
-      background:rgba(0,0,0,0.02);
-      color:rgba(17,24,39,0.45);
+    .cell:nth-child(7n) {
+      border-right: none;
     }
 
-    .day{
-      font-size:13px;
-      color:var(--muted);
+    .other-month {
+      background: rgba(0, 0, 0, 0.02);
+      color: rgba(17, 24, 39, 0.4);
     }
 
-    .today{
-      outline:2px solid rgba(124,58,237,0.28);
-      outline-offset:-2px;
+    .day {
+      font-size: 13px;
+      color: var(--muted);
     }
 
-    .selected{
-      outline:2px solid rgba(124,58,237,0.55);
-      outline-offset:-2px;
-      background:rgba(124,58,237,0.05);
+    .today {
+      outline: 2px solid rgba(124, 58, 237, 0.3);
+      outline-offset: -2px;
     }
 
-    /* ✅ 달력 안에는 점만 표시 */
-    .dots{
-      margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      align-items:center;
+    .selected {
+      outline: 2px solid rgba(124, 58, 237, 0.6);
+      outline-offset: -2px;
+      background: rgba(124, 58, 237, 0.05);
     }
 
-    .dot{
-      width:9px;
-      height:9px;
-      border-radius:999px;
-      display:inline-block;
+    .dots {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .more{
-      font-size:11px;
-      color:var(--muted);
-      background:#f3f4f6;
-      border:1px solid var(--line);
-      padding:2px 6px;
-      border-radius:999px;
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
     }
 
-    /* ✅ 아래 상세 영역 */
-    .details{
-      margin-top:12px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
+    .details {
+      margin-top: 12px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
       box-shadow: var(--shadow);
-      padding:14px;
     }
 
-    .details-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      gap:10px;
-      margin-bottom:10px;
+    .details-title {
+      margin: 0 0 10px;
+      font-size: 18px;
+      font-weight: 800;
     }
 
-    .details-title{
-      margin:0;
-      font-size:15px;
-      font-weight:800;
+    .items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .legend{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      justify-content:flex-end;
-      color:var(--muted);
-      font-size:11px;
+    .item {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fbfbfd;
     }
 
-    .lg{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 8px;
-      border:1px solid var(--line);
-      background:#fafafa;
-      border-radius:999px;
+    .item-time {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
     }
 
-    .items{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+    .item-title {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .item{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding:10px 12px;
-      border:1px solid var(--line);
-      background:#fbfbfd;
-      border-radius:14px;
+    .item-meta {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .item-left{
-      min-width:56px;
-      font-size:12px;
-      color:var(--muted);
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
+      color: var(--text);
     }
 
-    .item-main{
-      flex:1;
-      min-width:0;
-    }
-
-    .item-title{
-      font-size:13px;
-      font-weight:700;
-      margin:0;
-      line-height:1.25;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .item-meta{
-      margin-top:4px;
-      font-size:12px;
-      color:var(--muted);
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-size:11px;
-      color:var(--text);
-    }
-
-    a.link{
-      color:#2563eb;
-      text-decoration:none;
-      font-size:12px;
-    }
-    a.link:hover{ text-decoration:underline; }
-
-    footer{
-      margin-top:14px;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.6;
-    }
-
-    /* ✅ 모바일 최적화 */
-    @media (max-width:640px){
-      .wrap{ padding:12px; }
-
-      header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
       }
 
-      h1{ font-size:20px; }
-
-      .bar{
-        width:100%;
-        justify-content:space-between;
+      .cell {
+        min-height: 75px;
       }
 
-      .month{ min-width:auto; flex:1; }
-
-      button{
-        padding:12px 14px;
-        border-radius:14px;
+      .item {
+        grid-template-columns: 52px 1fr;
       }
-
-      .cell{
-        min-height:78px;
-        padding:8px;
-      }
-
-      .day{ font-size:12px; }
-
-      .dots{ margin-top:8px; gap:5px; }
-      .dot{ width:8px; height:8px; }
-
-      .details{ padding:12px; }
-      .item{ padding:10px; }
-      .item-left{ min-width:48px; }
     }
   </style>
 </head>
@@ -333,9 +246,9 @@
       </div>
 
       <div class="bar">
-        <button id="prev" aria-label="이전 달">◀</button>
+        <button id="prev">◀</button>
         <div class="month" id="monthLabel"></div>
-        <button id="next" aria-label="다음 달">▶</button>
+        <button id="next">▶</button>
       </div>
     </header>
 
@@ -347,255 +260,168 @@
       <div class="cal" id="calendar"></div>
     </section>
 
-    <section class="details" id="details">
-      <div class="details-head">
-        <h2 class="details-title" id="detailsTitle">날짜를 선택해 주세요</h2>
-
-        <div class="legend">
-          <span class="lg"><span class="dot" style="background:var(--youtube)"></span>유튜브</span>
-          <span class="lg"><span class="dot" style="background:var(--sns)"></span>SNS</span>
-          <span class="lg"><span class="dot" style="background:var(--concert)"></span>공연</span>
-          <span class="lg"><span class="dot" style="background:var(--event)"></span>행사</span>
-          <span class="lg"><span class="dot" style="background:var(--live)"></span>라이브</span>
-          <span class="lg"><span class="dot" style="background:var(--album)"></span>앨범</span>
-        </div>
-      </div>
-
+    <section class="details">
+      <h2 class="details-title" id="detailsTitle">날짜를 선택해 주세요</h2>
       <div class="items" id="detailsItems"></div>
     </section>
-
-    <footer>
-      ※ 본 사이트는 비공식 팬사이트이며 모든 일정은 공식 채널 공지를 기반으로 정리되었습니다.
-    </footer>
   </div>
 
   <script>
-    /* =========================
-       1) 일정 데이터
-       - date: "YYYY-MM-DD"
-       - type: youtube | sns | concert | event | live | album
-       - time: "HH:MM" (없으면 ""로)
-       - title: 표시명
-       - link: (선택) 공식 공지 링크
-       - order: 같은 시간대 정렬용(선택)
-    ========================= */
     const events = [
-      { date:"2026-01-07", type:"youtube", time:"18:00", title:"유튜브 콘텐츠 업로드", link:"" },
-      { date:"2026-01-08", type:"sns",     time:"",      title:"SNS 업데이트", link:"" },
-      { date:"2026-01-10", type:"concert", time:"19:00", title:"콘서트", link:"" },
-      { date:"2026-01-13", type:"album",   time:"12:00", title:"OST 발매", link:"" },
-      { date:"2026-01-13", type:"live",    time:"21:00", title:"라이브", link:"" },
+      { date: "2026-01-07", type: "youtube", time: "18:00", title: "유튜브 업로드" },
+      { date: "2026-01-08", type: "sns", title: "SNS 업데이트" },
+      { date: "2026-01-10", type: "concert", time: "19:00", title: "콘서트" },
+      { date: "2026-01-13", type: "album", title: "OST 발매" },
+      { date: "2026-01-13", type: "live", time: "21:00", title: "라이브" }
     ];
 
-    /* 유형 라벨/색상 */
-    const typeLabel = {
-      youtube:"유튜브",
-      sns:"SNS",
-      concert:"공연",
-      event:"행사",
-      live:"라이브",
-      album:"앨범",
+    const typeColor = {
+      youtube: "var(--youtube)",
+      sns: "var(--sns)",
+      concert: "var(--concert)",
+      event: "var(--event)",
+      live: "var(--live)",
+      album: "var(--album)"
     };
 
-    const typeVar = {
-      youtube:"--youtube",
-      sns:"--sns",
-      concert:"--concert",
-      event:"--event",
-      live:"--live",
-      album:"--album",
-    };
-
-    const cal = document.getElementById("calendar");
+    const calendar = document.getElementById("calendar");
     const monthLabel = document.getElementById("monthLabel");
     const detailsTitle = document.getElementById("detailsTitle");
     const detailsItems = document.getElementById("detailsItems");
 
     let view = new Date();
     view.setDate(1);
-
     let selectedKey = null;
 
     const pad = n => String(n).padStart(2, "0");
-    const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const keyOf = d =>
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-    function groupByDate(list){
-      const map = {};
-      for(const e of list){
-        (map[e.date] ??= []).push(e);
-      }
-      return map;
+    function weeksInMonth(year, month) {
+      const first = new Date(year, month, 1);
+      const last = new Date(year, month + 1, 0);
+      return Math.ceil((first.getDay() + last.getDate()) / 7);
     }
 
-    function sortEvents(list){
-      return [...list].sort((a,b)=>{
-        const ta = a.time || "99:99";
-        const tb = b.time || "99:99";
-        if(ta !== tb) return ta.localeCompare(tb);
-        return (a.order ?? 0) - (b.order ?? 0);
-      });
-    }
-
-    function renderDetails(dateKey){
-      selectedKey = dateKey;
-
-      const d = new Date(dateKey + "T00:00:00");
-      const title = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
-      detailsTitle.textContent = title;
-
-      const map = groupByDate(events);
-      const list = sortEvents(map[dateKey] || []);
-
-      detailsItems.innerHTML = "";
-
-      if(list.length === 0){
-        const empty = document.createElement("div");
-        empty.style.color = "#6b7280";
-        empty.style.fontSize = "13px";
-        empty.style.padding = "10px 2px";
-        empty.textContent = "등록된 스케줄이 없어요.";
-        detailsItems.appendChild(empty);
-        return;
-      }
-
-      for(const e of list){
-        const item = document.createElement("div");
-        item.className = "item";
-
-        const left = document.createElement("div");
-        left.className = "item-left";
-        left.textContent = e.time ? e.time : "시간";
-
-        const main = document.createElement("div");
-        main.className = "item-main";
-
-        const t = document.createElement("p");
-        t.className = "item-title";
-        t.textContent = e.title;
-
-        const meta = document.createElement("div");
-        meta.className = "item-meta";
-
-        const pill = document.createElement("span");
-        pill.className = "pill";
-        const dot = document.createElement("span");
-        dot.className = "dot";
-        dot.style.background = `var(${typeVar[e.type] || "--album"})`;
-
-        const lab = document.createElement("span");
-        lab.textContent = typeLabel[e.type] || "기타";
-
-        pill.appendChild(dot);
-        pill.appendChild(lab);
-
-        meta.appendChild(pill);
-
-        if(e.link){
-          const a = document.createElement("a");
-          a.className = "link";
-          a.href = e.link;
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          a.textContent = "출처 링크";
-          meta.appendChild(a);
-        }
-
-        main.appendChild(t);
-        main.appendChild(meta);
-
-        item.appendChild(left);
-        item.appendChild(main);
-
-        detailsItems.appendChild(item);
-      }
-    }
-
-    function renderCalendar(){
-      cal.innerHTML = "";
-
+    function renderCalendar() {
+      calendar.innerHTML = "";
       const year = view.getFullYear();
       const month = view.getMonth();
-      monthLabel.textContent = `${year}년 ${month+1}월`;
+      monthLabel.textContent = `${year}년 ${month + 1}월`;
 
-      const map = groupByDate(events);
+      const weeks = weeksInMonth(year, month);
+      const total = weeks * 7;
 
       const first = new Date(year, month, 1);
-      const startDow = first.getDay();
-      const start = new Date(year, month, 1 - startDow);
+      const start = new Date(year, month, 1 - first.getDay());
 
-      const todayKey = keyOf(new Date());
-
-      for(let i=0;i<42;i++){
+      for (let i = 0; i < total; i++) {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
-
         const key = keyOf(d);
 
         const cell = document.createElement("div");
         cell.className = "cell";
-
-        if(d.getMonth() !== month) cell.classList.add("other-month");
-        if(key === todayKey) cell.classList.add("today");
-        if(selectedKey && key === selectedKey) cell.classList.add("selected");
+        if (d.getMonth() !== month) cell.classList.add("other-month");
+        if (key === keyOf(new Date())) cell.classList.add("today");
+        if (key === selectedKey) cell.classList.add("selected");
 
         const day = document.createElement("div");
         day.className = "day";
         day.textContent = d.getDate();
         cell.appendChild(day);
 
-        const list = map[key] || [];
-        if(list.length){
-          const dots = document.createElement("div");
-          dots.className = "dots";
-
-          const shown = list.slice(0, 4);
-          for(const e of shown){
-            const dot = document.createElement("span");
-            dot.className = "dot";
-            dot.style.background = `var(${typeVar[e.type] || "--album"})`;
-            dots.appendChild(dot);
-          }
-
-          if(list.length > 4){
-            const more = document.createElement("span");
-            more.className = "more";
-            more.textContent = `+${list.length-4}`;
-            dots.appendChild(more);
-          }
-
-          cell.appendChild(dots);
-        }
-
-        /* ✅ 날짜 클릭하면 아래 리스트 갱신 */
-        cell.addEventListener("click", ()=>{
-          renderDetails(key);
-          renderCalendar(); // 선택 표시 업데이트
+        const dots = document.createElement("div");
+        dots.className = "dots";
+        events.filter(e => e.date === key).forEach(e => {
+          const dot = document.createElement("span");
+          dot.className = "dot";
+          dot.style.background = typeColor[e.type];
+          dots.appendChild(dot);
         });
+        cell.appendChild(dots);
 
-        cal.appendChild(cell);
+        cell.onclick = () => {
+          selectedKey = key;
+          renderDetails(key);
+          renderCalendar();
+        };
+
+        calendar.appendChild(cell);
       }
     }
 
-    document.getElementById("prev").onclick = () => {
-      view = new Date(view.getFullYear(), view.getMonth()-1, 1);
-      selectedKey = null;
-      detailsTitle.textContent = "날짜를 선택해 주세요";
+    function renderDetails(key) {
+      const d = new Date(key + "T00:00:00");
+      detailsTitle.textContent =
+        `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
       detailsItems.innerHTML = "";
+
+      const list = events.filter(e => e.date === key);
+      if (list.length === 0) {
+        detailsItems.textContent = "등록된 스케줄이 없어요.";
+        return;
+      }
+
+      list.forEach(e => {
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const time = document.createElement("div");
+        time.className = "item-time";
+        time.textContent = e.time || "";
+
+        const main = document.createElement("div");
+
+        const title = document.createElement("p");
+        title.className = "item-title";
+        title.textContent = e.title;
+
+        const meta = document.createElement("div");
+        meta.className = "item-meta";
+
+        const pill = document.createElement("span");
+        pill.className = "pill";
+
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = typeColor[e.type];
+
+        pill.appendChild(dot);
+        pill.appendChild(document.createTextNode(e.type));
+
+        meta.appendChild(pill);
+        main.appendChild(title);
+        main.appendChild(meta);
+
+        item.appendChild(time);
+        item.appendChild(main);
+        detailsItems.appendChild(item);
+      });
+    }
+
+    function goMonth(diff) {
+      view = new Date(view.getFullYear(), view.getMonth() + diff, 1);
+      const now = new Date();
+      if (
+        view.getFullYear() === now.getFullYear() &&
+        view.getMonth() === now.getMonth()
+      ) {
+        selectedKey = keyOf(now);
+        renderDetails(selectedKey);
+      } else {
+        selectedKey = null;
+        detailsTitle.textContent = "날짜를 선택해 주세요";
+        detailsItems.innerHTML = "";
+      }
       renderCalendar();
-    };
+    }
 
-    document.getElementById("next").onclick = () => {
-      view = new Date(view.getFullYear(), view.getMonth()+1, 1);
-      selectedKey = null;
-      detailsTitle.textContent = "날짜를 선택해 주세요";
-      detailsItems.innerHTML = "";
-      renderCalendar();
-    };
+    document.getElementById("prev").onclick = () => goMonth(-1);
+    document.getElementById("next").onclick = () => goMonth(1);
 
-    /* 첫 렌더: 오늘 날짜 자동 선택하고 싶으면 아래 두 줄 사용 */
-    // selectedKey = keyOf(new Date());
-    // renderDetails(selectedKey);
-
+    selectedKey = keyOf(new Date());
+    renderDetails(selectedKey);
     renderCalendar();
   </script>
 </body>
