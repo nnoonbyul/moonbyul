@@ -308,13 +308,39 @@
   </div>
 
   <script>
-    const events = [
-      { date: "2026-01-07", type: "youtube", time: "18:00", title: "유튜브 업로드" },
-      { date: "2026-01-08", type: "sns", title: "SNS 업데이트" },
-      { date: "2026-01-10", type: "concert", time: "19:00", title: "콘서트" },
-      { date: "2026-01-13", type: "album", title: "OST 발매" },
-      { date: "2026-01-13", type: "live", time: "21:00", title: "라이브" }
-    ];
+    let events = [];
+
+function normalizeDate(s) {
+  // 예: "2026. 1. 17" -> "2026-01-17"
+  if (!s) return "";
+  const cleaned = s.replace(/\s/g, "");     // 공백 제거
+  const parts = cleaned.split(".").filter(Boolean); // ["2026","1","17"]
+  if (parts.length < 3) return s;
+
+  const y = parts[0];
+  const m = String(parts[1]).padStart(2, "0");
+  const d = String(parts[2]).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+fetch("https://opensheet.elk.sh/1ZV_PrHZHmLfAgN-I7l8HJFzYW3SQfFeszxixjqUnFng/Form Responses 1")
+  .then(res => res.json())
+  .then(data => {
+    events = data.map(row => ({
+      date: normalizeDate(row["날짜"]),
+      type: row["유형"],
+      time: row["시간"] || "",
+      title: row["제목"]
+    }));
+
+    selectedKey = keyOf(new Date());
+    renderDetails(selectedKey);
+    renderCalendar();
+  })
+  .catch(err => {
+    console.error("스케줄 불러오기 실패:", err);
+  });
+
 
     const typeColor = {
       youtube: "var(--youtube)",
