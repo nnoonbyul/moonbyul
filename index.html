@@ -7,14 +7,21 @@
 
   <style>
     :root{
-      /* ✅ 라이트 테마 */
       --bg:#f6f7fb;
       --card:#ffffff;
       --line:#e6e8f0;
       --text:#111827;
       --muted:#6b7280;
-      --accent:#7c3aed;
-      --chip:#f3f4f6;
+
+      /* 유형별 색 (원하면 바꿔도 됨) */
+      --youtube:#ef4444;
+      --sns:#0ea5e9;
+      --concert:#a855f7;
+      --event:#f59e0b;
+      --live:#22c55e;
+      --album:#6366f1;
+
+      --shadow: 0 6px 20px rgba(17,24,39,0.06);
     }
 
     *{ box-sizing:border-box; }
@@ -69,9 +76,7 @@
       touch-action:manipulation;
     }
 
-    button:active{
-      transform:scale(0.98);
-    }
+    button:active{ transform:scale(0.98); }
 
     .month{
       min-width:150px;
@@ -84,12 +89,17 @@
       border:1px solid var(--line);
       border-radius:18px;
       overflow:hidden;
-      box-shadow: 0 6px 20px rgba(17,24,39,0.06);
+      box-shadow: var(--shadow);
+    }
+
+    /* ✅ 칸 너비가 최대한 일정하게 보이도록: 퍼센트 고정 */
+    .dow, .cal{
+      display:grid;
+      grid-template-columns: repeat(7, 14.285714%);
+      width:100%;
     }
 
     .dow{
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
       background:#fafafa;
       border-bottom:1px solid var(--line);
     }
@@ -100,22 +110,16 @@
       color:var(--muted);
     }
 
-    .cal{
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-    }
-
     .cell{
       min-height:112px;
       padding:10px 10px 8px;
       border-right:1px solid var(--line);
       border-bottom:1px solid var(--line);
       position:relative;
+      user-select:none;
     }
 
-    .cell:nth-child(7n){
-      border-right:none;
-    }
+    .cell:nth-child(7n){ border-right:none; }
 
     .other-month{
       background:rgba(0,0,0,0.02);
@@ -128,42 +132,149 @@
     }
 
     .today{
-      outline:2px solid rgba(124,58,237,0.35);
+      outline:2px solid rgba(124,58,237,0.28);
       outline-offset:-2px;
     }
 
-    .events{
-      margin-top:8px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
+    .selected{
+      outline:2px solid rgba(124,58,237,0.55);
+      outline-offset:-2px;
+      background:rgba(124,58,237,0.05);
     }
 
-    .evt{
+    /* ✅ 달력 안에는 점만 표시 */
+    .dots{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      align-items:center;
+    }
+
+    .dot{
+      width:9px;
+      height:9px;
+      border-radius:999px;
+      display:inline-block;
+    }
+
+    .more{
+      font-size:11px;
+      color:var(--muted);
+      background:#f3f4f6;
+      border:1px solid var(--line);
+      padding:2px 6px;
+      border-radius:999px;
+    }
+
+    /* ✅ 아래 상세 영역 */
+    .details{
+      margin-top:12px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+
+    .details-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .details-title{
+      margin:0;
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .lg{
       display:flex;
       align-items:center;
       gap:6px;
-      background:var(--chip);
+      padding:4px 8px;
       border:1px solid var(--line);
-      padding:7px 9px;
-      border-radius:12px;
-      font-size:12px;
-      line-height:1.2;
-      cursor:default;
+      background:#fafafa;
+      border-radius:999px;
+    }
 
-      /* ✅ 모바일에서 세로로 찢어지는 문제 해결 */
+    .items{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .item{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:#fbfbfd;
+      border-radius:14px;
+    }
+
+    .item-left{
+      min-width:56px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .item-main{
+      flex:1;
+      min-width:0;
+    }
+
+    .item-title{
+      font-size:13px;
+      font-weight:700;
+      margin:0;
+      line-height:1.25;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
 
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--accent);
-      flex:0 0 auto;
+    .item-meta{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
     }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:11px;
+      color:var(--text);
+    }
+
+    a.link{
+      color:#2563eb;
+      text-decoration:none;
+      font-size:12px;
+    }
+    a.link:hover{ text-decoration:underline; }
 
     footer{
       margin-top:14px;
@@ -173,7 +284,7 @@
     }
 
     /* ✅ 모바일 최적화 */
-    @media (max-width: 640px){
+    @media (max-width:640px){
       .wrap{ padding:12px; }
 
       header{
@@ -189,36 +300,26 @@
         justify-content:space-between;
       }
 
-      .month{
-        min-width:auto;
-        flex:1;
-        text-align:center;
-      }
+      .month{ min-width:auto; flex:1; }
 
       button{
-        padding:12px 14px; /* 터치하기 편하게 */
+        padding:12px 14px;
         border-radius:14px;
       }
 
       .cell{
-        min-height:86px;   /* 화면에 더 많이 보이도록 */
+        min-height:78px;
         padding:8px;
       }
 
-      .day{
-        font-size:12px;
-      }
+      .day{ font-size:12px; }
 
-      .evt{
-        font-size:11px;
-        padding:6px 8px;
-        border-radius:11px;
-      }
+      .dots{ margin-top:8px; gap:5px; }
+      .dot{ width:8px; height:8px; }
 
-      .dow div{
-        padding:8px;
-        font-size:11px;
-      }
+      .details{ padding:12px; }
+      .item{ padding:10px; }
+      .item-left{ min-width:48px; }
     }
   </style>
 </head>
@@ -246,82 +347,256 @@
       <div class="cal" id="calendar"></div>
     </section>
 
+    <section class="details" id="details">
+      <div class="details-head">
+        <h2 class="details-title" id="detailsTitle">날짜를 선택해 주세요</h2>
+
+        <div class="legend">
+          <span class="lg"><span class="dot" style="background:var(--youtube)"></span>유튜브</span>
+          <span class="lg"><span class="dot" style="background:var(--sns)"></span>SNS</span>
+          <span class="lg"><span class="dot" style="background:var(--concert)"></span>공연</span>
+          <span class="lg"><span class="dot" style="background:var(--event)"></span>행사</span>
+          <span class="lg"><span class="dot" style="background:var(--live)"></span>라이브</span>
+          <span class="lg"><span class="dot" style="background:var(--album)"></span>앨범</span>
+        </div>
+      </div>
+
+      <div class="items" id="detailsItems"></div>
+    </section>
+
     <footer>
       ※ 본 사이트는 비공식 팬사이트이며 모든 일정은 공식 채널 공지를 기반으로 정리되었습니다.
     </footer>
   </div>
 
   <script>
+    /* =========================
+       1) 일정 데이터
+       - date: "YYYY-MM-DD"
+       - type: youtube | sns | concert | event | live | album
+       - time: "HH:MM" (없으면 ""로)
+       - title: 표시명
+       - link: (선택) 공식 공지 링크
+       - order: 같은 시간대 정렬용(선택)
+    ========================= */
     const events = [
-      { date: "2026-01-06", title: "라디오 출연" },
-      { date: "2026-01-09", title: "콘서트" },
-      { date: "2026-01-12", title: "OST 발매" },
+      { date:"2026-01-07", type:"youtube", time:"18:00", title:"유튜브 콘텐츠 업로드", link:"" },
+      { date:"2026-01-08", type:"sns",     time:"",      title:"SNS 업데이트", link:"" },
+      { date:"2026-01-10", type:"concert", time:"19:00", title:"콘서트", link:"" },
+      { date:"2026-01-13", type:"album",   time:"12:00", title:"OST 발매", link:"" },
+      { date:"2026-01-13", type:"live",    time:"21:00", title:"라이브", link:"" },
     ];
 
+    /* 유형 라벨/색상 */
+    const typeLabel = {
+      youtube:"유튜브",
+      sns:"SNS",
+      concert:"공연",
+      event:"행사",
+      live:"라이브",
+      album:"앨범",
+    };
+
+    const typeVar = {
+      youtube:"--youtube",
+      sns:"--sns",
+      concert:"--concert",
+      event:"--event",
+      live:"--live",
+      album:"--album",
+    };
+
     const cal = document.getElementById("calendar");
-    const label = document.getElementById("monthLabel");
+    const monthLabel = document.getElementById("monthLabel");
+    const detailsTitle = document.getElementById("detailsTitle");
+    const detailsItems = document.getElementById("detailsItems");
 
     let view = new Date();
     view.setDate(1);
 
-    function render() {
+    let selectedKey = null;
+
+    const pad = n => String(n).padStart(2, "0");
+    const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+    function groupByDate(list){
+      const map = {};
+      for(const e of list){
+        (map[e.date] ??= []).push(e);
+      }
+      return map;
+    }
+
+    function sortEvents(list){
+      return [...list].sort((a,b)=>{
+        const ta = a.time || "99:99";
+        const tb = b.time || "99:99";
+        if(ta !== tb) return ta.localeCompare(tb);
+        return (a.order ?? 0) - (b.order ?? 0);
+      });
+    }
+
+    function renderDetails(dateKey){
+      selectedKey = dateKey;
+
+      const d = new Date(dateKey + "T00:00:00");
+      const title = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+      detailsTitle.textContent = title;
+
+      const map = groupByDate(events);
+      const list = sortEvents(map[dateKey] || []);
+
+      detailsItems.innerHTML = "";
+
+      if(list.length === 0){
+        const empty = document.createElement("div");
+        empty.style.color = "#6b7280";
+        empty.style.fontSize = "13px";
+        empty.style.padding = "10px 2px";
+        empty.textContent = "등록된 스케줄이 없어요.";
+        detailsItems.appendChild(empty);
+        return;
+      }
+
+      for(const e of list){
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const left = document.createElement("div");
+        left.className = "item-left";
+        left.textContent = e.time ? e.time : "시간";
+
+        const main = document.createElement("div");
+        main.className = "item-main";
+
+        const t = document.createElement("p");
+        t.className = "item-title";
+        t.textContent = e.title;
+
+        const meta = document.createElement("div");
+        meta.className = "item-meta";
+
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = `var(${typeVar[e.type] || "--album"})`;
+
+        const lab = document.createElement("span");
+        lab.textContent = typeLabel[e.type] || "기타";
+
+        pill.appendChild(dot);
+        pill.appendChild(lab);
+
+        meta.appendChild(pill);
+
+        if(e.link){
+          const a = document.createElement("a");
+          a.className = "link";
+          a.href = e.link;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = "출처 링크";
+          meta.appendChild(a);
+        }
+
+        main.appendChild(t);
+        main.appendChild(meta);
+
+        item.appendChild(left);
+        item.appendChild(main);
+
+        detailsItems.appendChild(item);
+      }
+    }
+
+    function renderCalendar(){
       cal.innerHTML = "";
 
       const year = view.getFullYear();
       const month = view.getMonth();
-      label.textContent = `${year}년 ${month + 1}월`;
+      monthLabel.textContent = `${year}년 ${month+1}월`;
+
+      const map = groupByDate(events);
 
       const first = new Date(year, month, 1);
-      const startDay = first.getDay();
-      const start = new Date(year, month, 1 - startDay);
+      const startDow = first.getDay();
+      const start = new Date(year, month, 1 - startDow);
 
-      for (let i = 0; i < 42; i++) {
+      const todayKey = keyOf(new Date());
+
+      for(let i=0;i<42;i++){
         const d = new Date(start);
         d.setDate(start.getDate() + i);
+
+        const key = keyOf(d);
 
         const cell = document.createElement("div");
         cell.className = "cell";
 
-        if (d.getMonth() !== month) cell.classList.add("other-month");
-        if (d.toDateString() === new Date().toDateString()) cell.classList.add("today");
+        if(d.getMonth() !== month) cell.classList.add("other-month");
+        if(key === todayKey) cell.classList.add("today");
+        if(selectedKey && key === selectedKey) cell.classList.add("selected");
 
         const day = document.createElement("div");
         day.className = "day";
         day.textContent = d.getDate();
         cell.appendChild(day);
 
-        const key = d.toISOString().slice(0, 10);
-        const todayEvents = events.filter(e => e.date === key);
+        const list = map[key] || [];
+        if(list.length){
+          const dots = document.createElement("div");
+          dots.className = "dots";
 
-        if (todayEvents.length) {
-          const box = document.createElement("div");
-          box.className = "events";
+          const shown = list.slice(0, 4);
+          for(const e of shown){
+            const dot = document.createElement("span");
+            dot.className = "dot";
+            dot.style.background = `var(${typeVar[e.type] || "--album"})`;
+            dots.appendChild(dot);
+          }
 
-          todayEvents.forEach(e => {
-            const evt = document.createElement("div");
-            evt.className = "evt";
-            evt.innerHTML = `<span class="dot"></span><span>${e.title}</span>`;
-            box.appendChild(evt);
-          });
+          if(list.length > 4){
+            const more = document.createElement("span");
+            more.className = "more";
+            more.textContent = `+${list.length-4}`;
+            dots.appendChild(more);
+          }
 
-          cell.appendChild(box);
+          cell.appendChild(dots);
         }
+
+        /* ✅ 날짜 클릭하면 아래 리스트 갱신 */
+        cell.addEventListener("click", ()=>{
+          renderDetails(key);
+          renderCalendar(); // 선택 표시 업데이트
+        });
 
         cal.appendChild(cell);
       }
     }
 
     document.getElementById("prev").onclick = () => {
-      view = new Date(view.getFullYear(), view.getMonth() - 1, 1);
-      render();
+      view = new Date(view.getFullYear(), view.getMonth()-1, 1);
+      selectedKey = null;
+      detailsTitle.textContent = "날짜를 선택해 주세요";
+      detailsItems.innerHTML = "";
+      renderCalendar();
     };
 
     document.getElementById("next").onclick = () => {
-      view = new Date(view.getFullYear(), view.getMonth() + 1, 1);
-      render();
+      view = new Date(view.getFullYear(), view.getMonth()+1, 1);
+      selectedKey = null;
+      detailsTitle.textContent = "날짜를 선택해 주세요";
+      detailsItems.innerHTML = "";
+      renderCalendar();
     };
 
-    render();
+    /* 첫 렌더: 오늘 날짜 자동 선택하고 싶으면 아래 두 줄 사용 */
+    // selectedKey = keyOf(new Date());
+    // renderDetails(selectedKey);
+
+    renderCalendar();
   </script>
 </body>
 </html>
