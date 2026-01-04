@@ -1,11 +1,267 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Moon Byul Schedule</title>
+
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #151922;
+      --line: #242b3a;
+      --text: #e8ecf3;
+      --muted: #98a2b3;
+      --accent: #b48cff;
+      --chip: #1f2636;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, 
+                   Apple SD Gothic Neo, Noto Sans KR, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .month {
+      min-width: 150px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .grid {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .dow {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: #121621;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dow div {
+      padding: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cal {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .cell {
+      min-height: 110px;
+      padding: 8px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cell:nth-child(7n) {
+      border-right: none;
+    }
+
+    .other-month {
+      opacity: 0.35;
+    }
+
+    .day {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .today {
+      outline: 2px solid rgba(180, 140, 255, 0.4);
+      outline-offset: -2px;
+    }
+
+    .events {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .evt {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      padding: 5px 6px;
+      border-radius: 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    footer {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>🌙 Moon Byul Schedule</h1>
-  <p>문별 스케줄 정리 사이트</p>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>🌙 Moon Byul Schedule</h1>
+        <div class="sub">비공식 팬 스케줄 정리</div>
+      </div>
+
+      <div class="bar">
+        <button id="prev">◀</button>
+        <div class="month" id="monthLabel"></div>
+        <button id="next">▶</button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="dow">
+        <div>일</div><div>월</div><div>화</div>
+        <div>수</div><div>목</div><div>금</div><div>토</div>
+      </div>
+      <div class="cal" id="calendar"></div>
+    </section>
+
+    <footer>
+      ※ 본 사이트는 비공식 팬사이트이며  
+      모든 일정은 공식 채널 공지를 기반으로 정리되었습니다.
+    </footer>
+  </div>
+
+  <script>
+    const events = [
+      { date: "2026-01-06", title: "라디오 출연" },
+      { date: "2026-01-09", title: "콘서트" },
+      { date: "2026-01-12", title: "OST 발매" }
+    ];
+
+    const cal = document.getElementById("calendar");
+    const label = document.getElementById("monthLabel");
+
+    let view = new Date();
+    view.setDate(1);
+
+    function render() {
+      cal.innerHTML = "";
+
+      const year = view.getFullYear();
+      const month = view.getMonth();
+      label.textContent = `${year}년 ${month + 1}월`;
+
+      const first = new Date(year, month, 1);
+      const startDay = first.getDay();
+      const start = new Date(year, month, 1 - startDay);
+
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+
+        const cell = document.createElement("div");
+        cell.className = "cell";
+
+        if (d.getMonth() !== month) cell.classList.add("other-month");
+        if (d.toDateString() === new Date().toDateString()) {
+          cell.classList.add("today");
+        }
+
+        const day = document.createElement("div");
+        day.className = "day";
+        day.textContent = d.getDate();
+        cell.appendChild(day);
+
+        const todayEvents = events.filter(
+          e => e.date === d.toISOString().slice(0, 10)
+        );
+
+        if (todayEvents.length) {
+          const box = document.createElement("div");
+          box.className = "events";
+
+          todayEvents.forEach(e => {
+            const evt = document.createElement("div");
+            evt.className = "evt";
+            evt.innerHTML = `<span class="dot"></span>${e.title}`;
+            box.appendChild(evt);
+          });
+
+          cell.appendChild(box);
+        }
+
+        cal.appendChild(cell);
+      }
+    }
+
+    document.getElementById("prev").onclick = () => {
+      view.setMonth(view.getMonth() - 1);
+      render();
+    };
+
+    document.getElementById("next").onclick = () => {
+      view.setMonth(view.getMonth() + 1);
+      render();
+    };
+
+    render();
+  </script>
 </body>
 </html>
