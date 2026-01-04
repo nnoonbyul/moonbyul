@@ -6,155 +6,219 @@
   <title>Moon Byul Schedule</title>
 
   <style>
-    :root {
-      --bg: #0f1115;
-      --card: #151922;
-      --line: #242b3a;
-      --text: #e8ecf3;
-      --muted: #98a2b3;
-      --accent: #b48cff;
-      --chip: #1f2636;
+    :root{
+      /* ✅ 라이트 테마 */
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --line:#e6e8f0;
+      --text:#111827;
+      --muted:#6b7280;
+      --accent:#7c3aed;
+      --chip:#f3f4f6;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    *{ box-sizing:border-box; }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, 
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto,
                    Apple SD Gothic Neo, Noto Sans KR, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background:var(--bg);
+      color:var(--text);
     }
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px;
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:16px;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 12px;
-      margin-bottom: 14px;
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      margin:10px 0 14px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 22px;
+    h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:0.2px;
     }
 
-    .sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
+    .sub{
+      margin-top:4px;
+      font-size:13px;
+      color:var(--muted);
     }
 
-    .bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .bar{
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
 
-    button {
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid var(--line);
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
+    button{
+      background:var(--card);
+      color:var(--text);
+      border:1px solid var(--line);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      touch-action:manipulation;
     }
 
-    .month {
-      min-width: 150px;
-      text-align: center;
-      font-weight: bold;
+    button:active{
+      transform:scale(0.98);
     }
 
-    .grid {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
+    .month{
+      min-width:150px;
+      text-align:center;
+      font-weight:700;
     }
 
-    .dow {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      background: #121621;
-      border-bottom: 1px solid var(--line);
+    .grid{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: 0 6px 20px rgba(17,24,39,0.06);
     }
 
-    .dow div {
-      padding: 10px;
-      font-size: 12px;
-      color: var(--muted);
+    .dow{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      background:#fafafa;
+      border-bottom:1px solid var(--line);
     }
 
-    .cal {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
+    .dow div{
+      padding:10px 12px;
+      font-size:12px;
+      color:var(--muted);
     }
 
-    .cell {
-      min-height: 110px;
-      padding: 8px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
+    .cal{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
     }
 
-    .cell:nth-child(7n) {
-      border-right: none;
+    .cell{
+      min-height:112px;
+      padding:10px 10px 8px;
+      border-right:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      position:relative;
     }
 
-    .other-month {
-      opacity: 0.35;
+    .cell:nth-child(7n){
+      border-right:none;
     }
 
-    .day {
-      font-size: 13px;
-      color: var(--muted);
+    .other-month{
+      background:rgba(0,0,0,0.02);
+      color:rgba(17,24,39,0.45);
     }
 
-    .today {
-      outline: 2px solid rgba(180, 140, 255, 0.4);
-      outline-offset: -2px;
+    .day{
+      font-size:13px;
+      color:var(--muted);
     }
 
-    .events {
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .today{
+      outline:2px solid rgba(124,58,237,0.35);
+      outline-offset:-2px;
     }
 
-    .evt {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--chip);
-      border: 1px solid var(--line);
-      padding: 5px 6px;
-      border-radius: 10px;
-      font-size: 12px;
-      cursor: pointer;
+    .events{
+      margin-top:8px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
+    .evt{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      background:var(--chip);
+      border:1px solid var(--line);
+      padding:7px 9px;
+      border-radius:12px;
+      font-size:12px;
+      line-height:1.2;
+      cursor:default;
+
+      /* ✅ 모바일에서 세로로 찢어지는 문제 해결 */
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    footer {
-      margin-top: 14px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.6;
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--accent);
+      flex:0 0 auto;
+    }
+
+    footer{
+      margin-top:14px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    /* ✅ 모바일 최적화 */
+    @media (max-width: 640px){
+      .wrap{ padding:12px; }
+
+      header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+      }
+
+      h1{ font-size:20px; }
+
+      .bar{
+        width:100%;
+        justify-content:space-between;
+      }
+
+      .month{
+        min-width:auto;
+        flex:1;
+        text-align:center;
+      }
+
+      button{
+        padding:12px 14px; /* 터치하기 편하게 */
+        border-radius:14px;
+      }
+
+      .cell{
+        min-height:86px;   /* 화면에 더 많이 보이도록 */
+        padding:8px;
+      }
+
+      .day{
+        font-size:12px;
+      }
+
+      .evt{
+        font-size:11px;
+        padding:6px 8px;
+        border-radius:11px;
+      }
+
+      .dow div{
+        padding:8px;
+        font-size:11px;
+      }
     }
   </style>
 </head>
@@ -168,9 +232,9 @@
       </div>
 
       <div class="bar">
-        <button id="prev">◀</button>
+        <button id="prev" aria-label="이전 달">◀</button>
         <div class="month" id="monthLabel"></div>
-        <button id="next">▶</button>
+        <button id="next" aria-label="다음 달">▶</button>
       </div>
     </header>
 
@@ -183,8 +247,7 @@
     </section>
 
     <footer>
-      ※ 본 사이트는 비공식 팬사이트이며  
-      모든 일정은 공식 채널 공지를 기반으로 정리되었습니다.
+      ※ 본 사이트는 비공식 팬사이트이며 모든 일정은 공식 채널 공지를 기반으로 정리되었습니다.
     </footer>
   </div>
 
@@ -192,7 +255,7 @@
     const events = [
       { date: "2026-01-06", title: "라디오 출연" },
       { date: "2026-01-09", title: "콘서트" },
-      { date: "2026-01-12", title: "OST 발매" }
+      { date: "2026-01-12", title: "OST 발매" },
     ];
 
     const cal = document.getElementById("calendar");
@@ -220,18 +283,15 @@
         cell.className = "cell";
 
         if (d.getMonth() !== month) cell.classList.add("other-month");
-        if (d.toDateString() === new Date().toDateString()) {
-          cell.classList.add("today");
-        }
+        if (d.toDateString() === new Date().toDateString()) cell.classList.add("today");
 
         const day = document.createElement("div");
         day.className = "day";
         day.textContent = d.getDate();
         cell.appendChild(day);
 
-        const todayEvents = events.filter(
-          e => e.date === d.toISOString().slice(0, 10)
-        );
+        const key = d.toISOString().slice(0, 10);
+        const todayEvents = events.filter(e => e.date === key);
 
         if (todayEvents.length) {
           const box = document.createElement("div");
@@ -240,7 +300,7 @@
           todayEvents.forEach(e => {
             const evt = document.createElement("div");
             evt.className = "evt";
-            evt.innerHTML = `<span class="dot"></span>${e.title}`;
+            evt.innerHTML = `<span class="dot"></span><span>${e.title}</span>`;
             box.appendChild(evt);
           });
 
@@ -252,12 +312,12 @@
     }
 
     document.getElementById("prev").onclick = () => {
-      view.setMonth(view.getMonth() - 1);
+      view = new Date(view.getFullYear(), view.getMonth() - 1, 1);
       render();
     };
 
     document.getElementById("next").onclick = () => {
-      view.setMonth(view.getMonth() + 1);
+      view = new Date(view.getFullYear(), view.getMonth() + 1, 1);
       render();
     };
 
